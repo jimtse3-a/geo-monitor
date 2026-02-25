@@ -151,11 +151,16 @@
         .platform-card {
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
         }
         
         .platform-card:hover {
@@ -169,20 +174,15 @@
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
         }
         
-        .platform-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
         .platform-name {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.35rem;
         }
         
         .platform-status {
             font-size: 0.75rem;
             color: var(--gray);
-            margin-top: 0.25rem;
         }
         
         /* Buttons */
@@ -703,37 +703,30 @@
                 <label style="display: block; margin-bottom: 0.75rem; font-weight: 500;">选择 AI 平台</label>
                 <div class="platform-grid">
                     <div class="platform-card active" data-platform="deepseek">
-                        <div class="platform-icon">🧠</div>
                         <div class="platform-name">DeepSeek</div>
                         <div class="platform-status">已选择</div>
                     </div>
                     <div class="platform-card active" data-platform="kimi">
-                        <div class="platform-icon">💬</div>
                         <div class="platform-name">Kimi</div>
                         <div class="platform-status">已选择</div>
                     </div>
                     <div class="platform-card active" data-platform="doubao">
-                        <div class="platform-icon">🎵</div>
                         <div class="platform-name">豆包</div>
                         <div class="platform-status">已选择</div>
                     </div>
                     <div class="platform-card active" data-platform="qianwen">
-                        <div class="platform-icon">🔥</div>
                         <div class="platform-name">千问</div>
                         <div class="platform-status">已选择</div>
                     </div>
                     <div class="platform-card active" data-platform="wenxin">
-                        <div class="platform-icon">📚</div>
                         <div class="platform-name">文心一言</div>
                         <div class="platform-status">已选择</div>
                     </div>
                     <div class="platform-card active" data-platform="hunyuan">
-                        <div class="platform-icon">🎮</div>
                         <div class="platform-name">腾讯混元</div>
                         <div class="platform-status">已选择</div>
                     </div>
                     <div class="platform-card active" data-platform="zhipu">
-                        <div class="platform-icon">🧪</div>
                         <div class="platform-name">智谱</div>
                         <div class="platform-status">已选择</div>
                     </div>
