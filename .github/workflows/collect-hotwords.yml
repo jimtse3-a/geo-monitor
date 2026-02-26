@@ -49,9 +49,7 @@ jobs:
         find . -name "hotwords_crawler.py" -type f 2>/dev/null || echo "File not found"
     
     - name: Run hotwords crawler
-      run: |
-    
-        python crawlers/hotwords_crawler.py
+      run: python geo-monitor/crawlers/hotwords_crawler.py
     
     - name: Send notification (optional)
       if: always()
