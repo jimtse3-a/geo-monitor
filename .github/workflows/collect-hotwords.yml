@@ -40,7 +40,16 @@ jobs:
         pip install requests
     
     - name: Run hotwords crawler
-      run: python crawlers/hotwords_crawler.py
+      working-directory: ./
+      run: |
+        ls -la
+        if [ -d "crawlers" ]; then
+          python crawlers/hotwords_crawler.py
+        else
+          echo "Error: crawlers directory not found"
+          ls -la
+          exit 1
+        fi
     
     - name: Send notification (optional)
       if: always()
