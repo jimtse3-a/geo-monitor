@@ -28,8 +28,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -52,16 +50,8 @@ jobs:
     
     - name: Run hotwords crawler
       run: |
-        if [ -f "crawlers/hotwords_crawler.py" ]; then
-          python crawlers/hotwords_crawler.py
-        elif [ -f "hotwords_crawler.py" ]; then
-          python hotwords_crawler.py
-        else
-          echo "ERROR: Cannot find hotwords_crawler.py"
-          echo "Searched in: crawlers/ and ./"
-          find . -name "*.py" -type f | head -20
-          exit 1
-        fi
+        cd geo-monitor
+        python crawlers/hotwords_crawler.py
     
     - name: Send notification (optional)
       if: always()
