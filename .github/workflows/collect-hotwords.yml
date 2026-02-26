@@ -50,7 +50,7 @@ jobs:
     
     - name: Run hotwords crawler
       run: |
-        cd geo-monitor
+    
         python crawlers/hotwords_crawler.py
     
     - name: Send notification (optional)
