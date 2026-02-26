@@ -39,15 +39,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
     
-    - name: Run hotwords crawler
-      working-directory: ./
+    - name: Debug directory structure
       run: |
+        echo "Current directory: $(pwd)"
+        echo "Contents of current directory:"
         ls -la
-        if [ -d "crawlers" ]; then
+        echo ""
+        echo "Looking for crawlers folder:"
+        find . -name "hotwords_crawler.py" -type f 2>/dev/null || echo "File not found"
+    
+    - name: Run hotwords crawler
+      run: |
+        if [ -f "crawlers/hotwords_crawler.py" ]; then
           python crawlers/hotwords_crawler.py
+        elif [ -f "hotwords_crawler.py" ]; then
+          python hotwords_crawler.py
         else
-          echo "Error: crawlers directory not found"
-          ls -la
+          echo "ERROR: Cannot find hotwords_crawler.py"
+          echo "Searched in: crawlers/ and ./"
+          find . -name "*.py" -type f | head -20
           exit 1
         fi
     
