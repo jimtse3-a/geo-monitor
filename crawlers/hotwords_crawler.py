@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 # ========== 飞书配置 - 从环境变量读取 ==========
 FEISHU_APP_ID = os.getenv('FEISHU_APP_ID')
-FEISHU_APP_SECRET = os.getenv('FEISHU_APP_SECRET')
+FEISHU_APP_SECRET = os.getenv('FEISHU_SECRET')
 FEISHU_BASE_ID = os.getenv('FEISHU_BASEID')
 TABLE_TRENDS = os.getenv('TABLE_TRENDS')
 TABLE_SKU = os.getenv('TABLE_SKU')
