@@ -63,12 +63,18 @@ class RetryableSession:
     
     def __init__(self, max_retries=3, backoff_factor=1):
         self.session = requests.Session()
-        retry = requests.adapters.HTTPAdapter(
-            max_retries=max_retries,
-            backoff_factor=backoff_factor
+        
+        # 使用 urllib3 的 Retry 配置
+        from urllib3.util.retry import Retry
+        retry_strategy = Retry(
+            total=max_retries,
+            backoff_factor=backoff_factor,
+            status_forcelist=[429, 500, 502, 503, 504],
         )
-        self.session.mount('http://', retry)
-        self.session.mount('https://', retry)
+        
+        adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
     
     def get(self, url, **kwargs):
         kwargs.setdefault('timeout', 30)
