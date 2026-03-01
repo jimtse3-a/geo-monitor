@@ -1269,14 +1269,131 @@
             trendChart.update();
         }
 
+        // API Configuration
+        const API_BASE_URL = 'https://trend-radar-api1.vercel.app';
+        
+        // Load real data from API
+        async function loadRealTimeData() {
+            try {
+                showLoading();
+                
+                // Fetch trends data
+                const response = await fetch(`${API_BASE_URL}/api/trends`);
+                const result = await response.json();
+                
+                if (result.code === 0 && result.data) {
+                    updateDashboardWithRealData(result.data);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                showError('数据加载失败，请检查网络连接');
+                hideLoading();
+            }
+        }
+        
+        function updateDashboardWithRealData(data) {
+            const trends = data.trends || [];
+            
+            // Update statistics
+            document.getElementById('totalScore').textContent = trends.length;
+            document.getElementById('platformCount').textContent = data.platforms.length;
+            
+            // Update visibility rate based on actual data
+            const avgHeat = trends.length > 0 
+                ? trends.reduce((sum, t) => sum + (parseInt(t.heat_score) || 0), 0) / trends.length 
+                : 0;
+            animateScore(Math.round(avgHeat));
+            
+            // Update platform chart with real data
+            const platformData = {};
+            data.platforms.forEach(p => platformData[p] = 0);
+            trends.forEach(t => {
+                if (t.platform && platformData[t.platform] !== undefined) {
+                    platformData[t.platform]++;
+                }
+            });
+            
+            if (platformChart) {
+                platformChart.data.datasets[0].data = Object.values(platformData);
+                platformChart.update();
+            }
+            
+            // Update trend list
+            updateTrendList(trends);
+        }
+        
+        function updateTrendList(trends) {
+            const trendList = document.querySelector('.trend-list');
+            if (!trendList || trends.length === 0) return;
+            
+            const html = trends.slice(0, 10).map((trend, index) => `
+                <div class="trend-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-weight: 600; color: var(--primary); font-size: 1.1rem;">${index + 1}</span>
+                        <div>
+                            <div style="font-weight: 500;">${trend.keyword || '未命名'}</div>
+                            <div style="font-size: 0.85rem; color: var(--gray);">${trend.platform || '未知平台'} · ${trend.category || '未分类'}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 600; color: ${getHeatColor(trend.heat_score)};">${trend.heat_score || 0}°</div>
+                        <div style="font-size: 0.75rem; color: ${getTrendColor(trend.trend)}">${trend.trend || '平稳'}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            trendList.innerHTML = html;
+        }
+        
+        function getHeatColor(score) {
+            if (score >= 90) return 'var(--danger)';
+            if (score >= 70) return 'var(--warning)';
+            if (score >= 50) return 'var(--success)';
+            return 'var(--gray)';
+        }
+        
+        function getTrendColor(trend) {
+            if (trend === '飙升') return 'var(--danger)';
+            if (trend === '上升') return 'var(--success)';
+            return 'var(--gray)';
+        }
+        
+        function showLoading() {
+            const btn = document.querySelector('.btn-primary');
+            if (btn) {
+                btn.innerHTML = '<span class="loading"></span>加载中...';
+                btn.disabled = true;
+            }
+        }
+        
+        function hideLoading() {
+            const btn = document.querySelector('.btn-primary');
+            if (btn) {
+                btn.innerHTML = '⚡ 开始监测';
+                btn.disabled = false;
+            }
+        }
+        
+        function showError(msg) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 16px 24px; background: var(--danger); color: white; border-radius: 8px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2);';
+            errorDiv.textContent = msg;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+        
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
             
-            // Animate initial score
-            setTimeout(() => {
-                animateScore(68);
-            }, 500);
+            // Load real data
+            loadRealTimeData();
+            
+            // Auto refresh every 5 minutes
+            setInterval(loadRealTimeData, 5 * 60 * 1000);
         });
     </script>
 </body>
